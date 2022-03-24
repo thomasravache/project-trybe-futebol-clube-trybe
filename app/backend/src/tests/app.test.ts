@@ -3,7 +3,7 @@ import { App } from '../app';
 
 const { expect } = chai;
 
-describe('---- server.ts -----', () => {
+describe('---- app.ts -----', () => {
   it('App deve ser uma classe', () => {
     expect(new App()).to.be.an('object');
   });
