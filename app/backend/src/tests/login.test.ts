@@ -35,7 +35,7 @@ describe('------- Login -------', () => {
 
     before(async () => {
       response = await chai.request(app).post('/login').send({
-        username: 'Admin',
+        email: 'Admin',
         password: '1234567',
       } as LoginRequest
       );
