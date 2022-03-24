@@ -1,3 +1,4 @@
+import * as bcrypt from 'bcryptjs';
 import UserModel from '../database/models/UserModel';
 import { JwtOptions, LoginRequest, LoginResponse, ModelStatic } from '../@types/types';
 import Service from './Service';
@@ -23,14 +24,13 @@ class LoginService extends Service implements ILoginService {
   public async login({ email, password }: LoginRequest): Promise<LoginResponse> {
     const user = await this.model.findOne({ where: { email } });
 
-    if (!user || user.password !== password) {
+    const comparedPasswords = await bcrypt.compare(password, !user ? '' : user.password);
+
+    if (!user || comparedPasswords === false) {
       throw new CustomError('Incorrect email or password', StatusCode.UNAUTHORIZED);
     }
 
-    const jwtPayload: IJwtPayload = {
-      userId: user.id,
-      email,
-    };
+    const jwtPayload: IJwtPayload = { userId: user.id, email };
 
     const { token } = new Token(jwtPayload, jwtOptions);
 

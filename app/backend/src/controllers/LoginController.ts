@@ -11,7 +11,6 @@ class LoginController {
 
   constructor(router: Router = Router(), service: ILoginService = new LoginService()) {
     this._service = service;
-    console.log(service);
     this._router = router;
 
     this.login = this.login.bind(this);
