@@ -1,5 +1,10 @@
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
+import * as cors from 'cors';
+import ErrorHandler from './errors/ErrorHandler';
+import LoginController from './controllers/LoginController';
+
+const loginRoutes = new LoginController().buildRoutes();
 
 class App {
   public app: express.Express;
@@ -20,14 +25,22 @@ class App {
     };
 
     this.app.use(accessControl);
+    this.app.use(cors());
     this.app.use(bodyParser.json());
+
+    this.app.use('/login', loginRoutes);
+
+    /* ERROR MIDDLEWARES */
+    this.app.use(ErrorHandler.inputError);
+    this.app.use(ErrorHandler.domainError);
+    this.app.use(ErrorHandler.serverError);
   }
 
   // ...
   public start(PORT: string | number):void {
     this.app.listen(PORT, () => {
       console.log(`Ouvindo na porta ${PORT}`);
-    })
+    });
   }
 }
 

@@ -20,6 +20,7 @@ const Login = () => {
       const endpoint = '/login';
 
       const { token, user } = await requestLogin(endpoint, { email, password });
+      console.log(user);
 
       localStorage.setItem('user', JSON.stringify({ token, ...user }));
       setIsLogged(true);
