@@ -7,7 +7,7 @@ COPY . .
 
 EXPOSE 3000
 
-CMD [ "npm", "start" ]
+RUN npm start
 # RUN npm run build
 
 # FROM nginx:1.16.0-alpine AS prod
