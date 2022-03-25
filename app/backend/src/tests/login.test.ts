@@ -79,4 +79,24 @@ describe('------- Login -------', () => {
       expect(response.body.error).to.be.equal('Incorrect email or password');
     })
   })
+
+  describe('Quando o username ou password não são informados', () => {
+    let response: Response;
+
+    before(async () => {
+      response = await chai.request(app).post('/login').send({});
+    });
+
+    it('retorna http status 401', () => {
+      expect(response).to.have.status(StatusCode.UNAUTHORIZED);
+    });
+
+    it('deve ter a propriedade "message"', () => {
+      expect(response.body).to.have.property('message');
+    });
+
+    it('deve retornar a mensagem "All fields must be filled"', () => {
+      expect(response.body.message).to.be.equal('All fields must be filled');
+    });
+  })
 });
