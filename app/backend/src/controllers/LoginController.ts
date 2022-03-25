@@ -3,6 +3,7 @@ import LoginService from '../services/LoginService';
 import { ILoginService } from '../@types/interfaces';
 import StatusCode from '../@types/enums';
 import { LoginResponse, LoginRequest } from '../@types/types';
+import SchemaFactory from '../factories/SchemaFactory';
 
 class LoginController {
   private _service: ILoginService;
@@ -19,6 +20,8 @@ class LoginController {
   private async login(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
     try {
       const loginRequest: LoginRequest = req.body;
+      console.log(loginRequest);
+      SchemaFactory.validate<LoginRequest>(SchemaFactory.loginSchema(), loginRequest);
 
       const loginResult: LoginResponse = await this._service.login(loginRequest);
 

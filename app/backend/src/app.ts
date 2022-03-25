@@ -13,7 +13,8 @@ class App {
   constructor() {
     this.app = express();
     this.config();
-    // ...
+    this.routes();
+    this.errorMiddlewares();
   }
 
   private config():void {
@@ -25,18 +26,20 @@ class App {
     };
 
     this.app.use(accessControl);
-    this.app.use(cors());
     this.app.use(bodyParser.json());
+    this.app.use(cors());
+  }
 
+  private routes(): void {
     this.app.use('/login', loginRoutes);
+  }
 
-    /* ERROR MIDDLEWARES */
+  private errorMiddlewares(): void {
     this.app.use(ErrorHandler.inputError);
     this.app.use(ErrorHandler.domainError);
     this.app.use(ErrorHandler.serverError);
   }
 
-  // ...
   public start(PORT: string | number):void {
     this.app.listen(PORT, () => {
       console.log(`Ouvindo na porta ${PORT}`);

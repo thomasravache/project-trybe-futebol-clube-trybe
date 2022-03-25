@@ -4,15 +4,12 @@ import { JoiStatusCodes } from '../@types/types';
 import { IDomainError } from '../@types/interfaces';
 import StatusCode from '../@types/enums';
 
+const joiStatusCodes: JoiStatusCodes = {
+  'any.required': StatusCode.UNAUTHORIZED,
+  'string.empty': StatusCode.UNAUTHORIZED,
+};
+
 class ErrorHandler {
-  private static _joiStatusCodes: JoiStatusCodes;
-
-  constructor() {
-    ErrorHandler._joiStatusCodes = {
-      'any.required': StatusCode.BAD_REQUEST,
-    };
-  }
-
   public static inputError(
     err: ValidationError,
     _req: Request,
@@ -22,10 +19,10 @@ class ErrorHandler {
     if (err.isJoi) {
       const { details } = err;
       const { type, message } = details[0];
+      console.log(type);
+      const statusCode = joiStatusCodes[type] || 404;
 
-      const statusCode = this._joiStatusCodes[type] || 404;
-
-      return res.status(statusCode).json({ error: message });
+      return res.status(statusCode).json({ message });
     }
 
     return next(err);
@@ -38,7 +35,7 @@ class ErrorHandler {
     next: NextFunction,
   ): Response | void {
     if (err.domain) {
-      return res.status(err.code).json({ error: err.message });
+      return res.status(err.code).json({ message: err.message });
     }
 
     return next(err);

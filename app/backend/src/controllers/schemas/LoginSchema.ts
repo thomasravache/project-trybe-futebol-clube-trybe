@@ -6,14 +6,18 @@ class LoginSchema implements ISchema<LoginRequest> {
   private _schema: Joi.ObjectSchema<LoginRequest>;
 
   public schema(): Joi.ObjectSchema<LoginRequest> {
+    const customMessage = 'All fields must be filled';
+
     this._schema = Joi.object({
-      email: Joi.not().empty().required()
+      email: Joi.string().not().empty().required()
         .messages({
-          'any.required': 'All fields must be filled',
+          'any.required': customMessage,
+          'string.empty': customMessage,
         }),
-      password: Joi.not().empty().required()
+      password: Joi.string().not().empty().required()
         .messages({
-          'any.required': 'All fields must be filled',
+          'any.required': customMessage,
+          'string.empty': customMessage,
         }),
     });
 
