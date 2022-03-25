@@ -7,11 +7,11 @@ services:
       backend:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "lsof", "-t", "-i:3000"]  # Caso utilize outra porta interna para o front, altere ela aqui também
+      test: ["CMD", "lsof", "-t", "-i:80"]  # Caso utilize outra porta interna para o front, altere ela aqui também
       timeout: 10s
       retries: 5
     ports:
-      - "3000:3000"
+      - "3000:80"
     # restart: always
 
   backend:
