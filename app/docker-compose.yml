@@ -7,13 +7,11 @@ services:
       backend:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "lsof", "-t", "-i:80"]  # Caso utilize outra porta interna para o front, altere ela aqui também
+      test: ["CMD", "lsof", "-t", "-i:3000"]  # Caso utilize outra porta interna para o front, altere ela aqui também
       timeout: 10s
       retries: 5
     ports:
-      - "3000:80"
-    # restart: always
-
+      - 3000:3000
   backend:
     build: ./backend
     container_name: app_backend
@@ -32,7 +30,7 @@ services:
       timeout: 10s
       retries: 5
     ports:
-      - "3001:3001"
+      - 3001:3001
   db:
     image: mysql:8.0.21
     container_name: db
