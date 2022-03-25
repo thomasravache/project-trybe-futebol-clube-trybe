@@ -71,12 +71,12 @@ describe('------- Login -------', () => {
       expect(response).to.have.status(StatusCode.UNAUTHORIZED);
     });
 
-    it ('deve ter a propriedade "error"', () => {
-      expect(response.body).to.have.property('error');
+    it ('deve ter a propriedade "message"', () => {
+      expect(response.body).to.have.property('message');
     })
 
     it ('deve retornar a mensagem "Incorrect email or password"', () => {
-      expect(response.body.error).to.be.equal('Incorrect email or password');
+      expect(response.body.message).to.be.equal('Incorrect email or password');
     })
   })
 
