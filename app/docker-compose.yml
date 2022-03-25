@@ -4,8 +4,7 @@ services:
     build: ./frontend
     container_name: app_frontend
     depends_on:
-      backend:
-        # condition: service_healthy
+      - backend
     ports:
       - 3000:3000
     # healthcheck:
