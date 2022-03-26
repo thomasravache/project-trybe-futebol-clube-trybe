@@ -7,7 +7,7 @@ class ControllerFactory {
     return new LoginController(router, service);
   }
 
-  public static club(router?: Router, service?: IClubService): ClubController {
+  public static clubs(router?: Router, service?: IClubService): ClubController {
     return new ClubController(router, service);
   }
 }
