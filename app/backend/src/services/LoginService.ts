@@ -1,16 +1,16 @@
 import * as bcrypt from 'bcryptjs';
 import UserModel from '../database/models/UserModel';
-import { JwtOptions, LoginRequest, LoginResponse, ModelStatic } from '../@types/types';
+import { LoginRequest, LoginResponse, ModelStatic } from '../@types/types';
 import Service from './Service';
 import CustomError from '../errors/CustomError';
 import StatusCode from '../@types/enums';
 import { IJwtPayload, ILoginService, IUserModel } from '../@types/interfaces';
-import Token from '../jwtHandler/Token';
+import Authenticator from '../jwtHandler/Authenticator';
 
-const jwtOptions: JwtOptions = {
-  expiresIn: '1h',
-  algorithm: 'HS256',
-};
+// const jwtOptions: JwtOptions = {
+//   expiresIn: '1h',
+//   algorithm: 'HS256',
+// };
 
 class LoginService extends Service implements ILoginService {
   public readonly model: ModelStatic<IUserModel>;
@@ -32,7 +32,7 @@ class LoginService extends Service implements ILoginService {
 
     const jwtPayload: IJwtPayload = { userId: user.id, email };
 
-    const { token } = new Token(jwtPayload, jwtOptions);
+    const token = new Authenticator().generateToken(jwtPayload);
 
     return {
       user: {

@@ -1,10 +1,13 @@
 import { Model } from 'sequelize/types';
 
-interface IUserModel extends Model {
+export interface IUserResponse {
   id: number;
   username: string;
   email: string;
   role: string;
+}
+
+interface IUserModel extends IUserResponse, Model {
   password: string;
 }
 

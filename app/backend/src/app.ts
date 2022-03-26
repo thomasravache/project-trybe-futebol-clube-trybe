@@ -2,9 +2,7 @@ import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import * as cors from 'cors';
 import ErrorHandler from './errors/ErrorHandler';
-import LoginController from './controllers/LoginController';
-
-const loginRoutes = new LoginController().buildRoutes();
+import ControllerFactory from './factories/ControllerFactory';
 
 class App {
   public app: express.Express;
@@ -31,7 +29,7 @@ class App {
   }
 
   private routes(): void {
-    this.app.use('/login', loginRoutes);
+    this.app.use('/login', ControllerFactory.login().buildRoutes());
   }
 
   private errorMiddlewares(): void {

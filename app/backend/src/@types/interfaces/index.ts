@@ -1,8 +1,9 @@
 import IDomainError from './DomainError';
 import IJwtPayload from './JwtPayload';
-import IUserModel from './UserModel';
+import IUserModel, { IUserResponse } from './UserModel';
 import ILoginService from './LoginService';
 import ISchema from './Schema';
+import IRequest from './Request';
 
 export {
   IDomainError,
@@ -10,4 +11,6 @@ export {
   IUserModel,
   ILoginService,
   ISchema,
+  IRequest,
+  IUserResponse,
 };
