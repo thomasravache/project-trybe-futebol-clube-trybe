@@ -33,7 +33,7 @@ describe('------- Login -------', () => {
     (UserModel.findOne as sinon.SinonStub).restore();
   });
 
-  describe('\nrota /login\n', () => {
+  describe('\nRequest da rota /login', () => {
     describe('Quando o login é realizado com sucesso', () => {
       let response: Response;
   
@@ -102,7 +102,7 @@ describe('------- Login -------', () => {
     });
   });
 
-  describe('\nrota /login/validate\n', () => {
+  describe('\nRequest da rota /login/validate', () => {
     describe('Quando faz a requisição', () => {
       let token: string;
       let response: Response;
