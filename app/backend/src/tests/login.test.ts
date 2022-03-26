@@ -33,70 +33,99 @@ describe('------- Login -------', () => {
     (UserModel.findOne as sinon.SinonStub).restore();
   });
 
-  describe('Quando o login é realizado com sucesso', () => {
-    let response: Response;
-
-    before(async () => {
-      response = await chai.request(app).post('/login').send({
-        email: 'admin@admin.com.br',
-        password: '1234567',
-      } as LoginRequest
-      );
+  describe('\nrota /login\n', () => {
+    describe('Quando o login é realizado com sucesso', () => {
+      let response: Response;
+  
+      before(async () => {
+        response = await chai.request(app).post('/login').send({
+          email: 'admin@admin.com.br',
+          password: '1234567',
+        } as LoginRequest
+        );
+      });
+  
+      it('retorna http status 200', () => {
+        expect(response).to.have.status(StatusCode.OK);
+      });
+  
+      it('tenha a propriedade "user"', () => {
+        expect(response.body).to.have.property('user');
+      });
+  
+      it('tenha a propriedade "token"', () => {
+        expect(response.body).to.have.property('token');
+      })
     });
-
-    it('retorna http status 200', () => {
-      expect(response).to.have.status(StatusCode.OK);
-    });
-
-    it('tenha a propriedade "user"', () => {
-      expect(response.body).to.have.property('user');
-    });
-
-    it('tenha a propriedade "token"', () => {
-      expect(response.body).to.have.property('token');
+  
+    describe('Quando o user não existe ou a senha está incorreta', () => {
+      let response: Response;
+  
+      before(async () => {
+        response = await chai.request(app).post('/login').send({
+          email: 'fake@fake.com',
+          password: 'senhafake'
+        } as LoginRequest);
+      });
+  
+      it('retorna http status 401', () => {
+        expect(response).to.have.status(StatusCode.UNAUTHORIZED);
+      });
+  
+      it ('deve ter a propriedade "message"', () => {
+        expect(response.body).to.have.property('message');
+      })
+  
+      it ('deve retornar a mensagem "Incorrect email or password"', () => {
+        expect(response.body.message).to.be.equal('Incorrect email or password');
+      })
     })
+  
+    describe('Quando o username ou password não são informados', () => {
+      let response: Response;
+  
+      before(async () => {
+        response = await chai.request(app).post('/login').send({});
+      });
+  
+      it('retorna http status 401', () => {
+        expect(response).to.have.status(StatusCode.UNAUTHORIZED);
+      });
+  
+      it('deve ter a propriedade "message"', () => {
+        expect(response.body).to.have.property('message');
+      });
+  
+      it('deve retornar a mensagem "All fields must be filled"', () => {
+        expect(response.body.message).to.be.equal('All fields must be filled');
+      });
+    });
   });
 
-  describe('Quando o user não existe ou a senha está incorreta', () => {
-    let response: Response;
+  describe('\nrota /login/validate\n', () => {
+    describe('Quando faz a requisição', () => {
+      let token: string;
+      let response: Response;
 
-    before(async () => {
-      response = await chai.request(app).post('/login').send({
-        email: 'fake@fake.com',
-        password: 'senhafake'
-      } as LoginRequest);
+      before(async () => {
+        const loginResponse = await chai.request(app).post('/login').send({
+          email: 'admin@admin.com.br',
+          password: '1234567',
+        } as LoginRequest);
+
+        token = loginResponse.body.token;
+
+        response = await chai.request(app)
+          .get('/login/validate').set('Authorization', token);
+      });
+
+      it('retorna status 200', () => {
+        expect(response).to.have.status(StatusCode.OK);
+      });
+
+      it('retorna a role do usuário', () => {
+        expect(response.text).to.be.equal('admin');
+      });
     });
-
-    it('retorna http status 401', () => {
-      expect(response).to.have.status(StatusCode.UNAUTHORIZED);
-    });
-
-    it ('deve ter a propriedade "message"', () => {
-      expect(response.body).to.have.property('message');
-    })
-
-    it ('deve retornar a mensagem "Incorrect email or password"', () => {
-      expect(response.body.message).to.be.equal('Incorrect email or password');
-    })
-  })
-
-  describe('Quando o username ou password não são informados', () => {
-    let response: Response;
-
-    before(async () => {
-      response = await chai.request(app).post('/login').send({});
-    });
-
-    it('retorna http status 401', () => {
-      expect(response).to.have.status(StatusCode.UNAUTHORIZED);
-    });
-
-    it('deve ter a propriedade "message"', () => {
-      expect(response.body).to.have.property('message');
-    });
-
-    it('deve retornar a mensagem "All fields must be filled"', () => {
-      expect(response.body.message).to.be.equal('All fields must be filled');
-    });
-  })
+  });
 });
