@@ -1,21 +1,20 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { ILoginService, IRequest, IUserResponse } from '../@types/interfaces';
+import { IController, ILoginService, IRequest, IUserResponse } from '../@types/interfaces';
 import StatusCode from '../@types/enums';
 import { LoginResponse, LoginRequest } from '../@types/types';
 import { SchemaFactory, ServiceFactory } from '../factories';
 import Authenticator from '../jwtHandler/Authenticator';
 
-class LoginController {
-  private _service: ILoginService;
+class LoginController implements IController {
+  public readonly service: ILoginService;
 
-  private _router: Router;
+  public readonly router: Router;
 
   constructor(router: Router = Router(), service: ILoginService = ServiceFactory.login()) {
-    this._service = service;
-    this._router = router;
+    this.service = service;
+    this.router = router;
 
     this.login = this.login.bind(this);
-    // this.validate = this.validate.bind(this);
   }
 
   private async login(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
@@ -24,7 +23,7 @@ class LoginController {
 
       SchemaFactory.validate<LoginRequest>(SchemaFactory.loginSchema(), loginRequest);
 
-      const loginResult: LoginResponse = await this._service.login(loginRequest);
+      const loginResult: LoginResponse = await this.service.login(loginRequest);
 
       return res.status(StatusCode.OK).json(loginResult);
     } catch (e) {
@@ -47,10 +46,10 @@ class LoginController {
   }
 
   public buildRoutes(): Router {
-    this._router.post('/', this.login);
-    this._router.get('/validate', new Authenticator().authMiddleware, LoginController.validate);
+    this.router.post('/', this.login);
+    this.router.get('/validate', new Authenticator().authMiddleware, LoginController.validate);
 
-    return this._router;
+    return this.router;
   }
 }
 

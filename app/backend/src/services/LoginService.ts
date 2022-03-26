@@ -1,23 +1,15 @@
 import * as bcrypt from 'bcryptjs';
 import UserModel from '../database/models/UserModel';
 import { LoginRequest, LoginResponse, ModelStatic } from '../@types/types';
-import Service from './Service';
 import CustomError from '../errors/CustomError';
 import StatusCode from '../@types/enums';
 import { IJwtPayload, ILoginService, IUserModel } from '../@types/interfaces';
 import Authenticator from '../jwtHandler/Authenticator';
 
-// const jwtOptions: JwtOptions = {
-//   expiresIn: '1h',
-//   algorithm: 'HS256',
-// };
-
-class LoginService extends Service implements ILoginService {
+class LoginService implements ILoginService {
   public readonly model: ModelStatic<IUserModel>;
 
   constructor(model: ModelStatic<IUserModel> = UserModel) {
-    super();
-
     this.model = model;
   }
 

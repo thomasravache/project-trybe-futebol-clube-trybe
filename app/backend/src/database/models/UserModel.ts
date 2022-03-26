@@ -1,7 +1,8 @@
 import { DataTypes, Model } from 'sequelize';
+import { IUserModel } from '../../@types/interfaces';
 import db from '.';
 
-class UserModel extends Model {
+class UserModel extends Model implements IUserModel {
   public id!: number;
 
   public username!: string;

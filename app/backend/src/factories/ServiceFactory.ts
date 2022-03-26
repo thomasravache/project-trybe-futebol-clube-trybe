@@ -1,10 +1,14 @@
-import { IUserModel } from '../@types/interfaces';
+import { IClubModel, IUserModel } from '../@types/interfaces';
 import { ModelStatic } from '../@types/types';
-import LoginService from '../services/LoginService';
+import { LoginService, ClubService } from '../services';
 
 class ServiceFactory {
   public static login(model?: ModelStatic<IUserModel>) {
     return new LoginService(model);
+  }
+
+  public static club(model?: ModelStatic<IClubModel>) {
+    return new ClubService(model);
   }
 }
 
