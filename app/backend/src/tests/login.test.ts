@@ -33,7 +33,7 @@ describe('------- Login -------', () => {
     (UserModel.findOne as sinon.SinonStub).restore();
   });
 
-  describe('\nRequest da rota /login', () => {
+  describe('\nQuando o request é feito na rota /login e:', () => {
     describe('Quando o login é realizado com sucesso', () => {
       let response: Response;
   
@@ -102,30 +102,28 @@ describe('------- Login -------', () => {
     });
   });
 
-  describe('\nRequest da rota /login/validate', () => {
-    describe('Quando faz a requisição', () => {
-      let token: string;
-      let response: Response;
+  describe('\nQuando o request é feito na rota /login/validate', () => {
+    let token: string;
+    let response: Response;
 
-      before(async () => {
-        const loginResponse = await chai.request(app).post('/login').send({
-          email: 'admin@admin.com.br',
-          password: '1234567',
-        } as LoginRequest);
+    before(async () => {
+      const loginResponse = await chai.request(app).post('/login').send({
+        email: 'admin@admin.com.br',
+        password: '1234567',
+      } as LoginRequest);
 
-        token = loginResponse.body.token;
+      token = loginResponse.body.token;
 
-        response = await chai.request(app)
-          .get('/login/validate').set('Authorization', token);
-      });
+      response = await chai.request(app)
+        .get('/login/validate').set('Authorization', token);
+    });
 
-      it('retorna status 200', () => {
-        expect(response).to.have.status(StatusCode.OK);
-      });
+    it('retorna status 200', () => {
+      expect(response).to.have.status(StatusCode.OK);
+    });
 
-      it('retorna a role do usuário', () => {
-        expect(response.text).to.be.equal('admin');
-      });
+    it('retorna a role do usuário', () => {
+      expect(response.text).to.be.equal('admin');
     });
   });
 });

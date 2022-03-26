@@ -27,13 +27,18 @@ describe('------ Clubs -------', () => {
         clubName: 'Os bacana',
       },
     ] as IClubModel[]);
+
+    sinon.stub(ClubModel, 'findOne').resolves({
+      id: 1,
+      clubName: 'Timaço',
+    } as IClubModel);
   });
 
   after(() => {
     (ClubModel.findAll as sinon.SinonStub).restore();
   });
 
-  describe('\nRequest da rota /clubs', () => {
+  describe('\nQuando o request é feito na rota /clubs', () => {
     describe('deve retornar todos os clubes', () => {
       let response: Response;
 
@@ -57,4 +62,23 @@ describe('------ Clubs -------', () => {
       });
     });
   });
+
+  describe('\nQuando o request é feito na rota /clubs/:id', () => {
+    let response: Response;
+
+    before(async () => {
+      response = await chai.request(app).get('/clubs/1');
+    });
+
+    describe('deve retornar o clube de acordo com o id', () => {
+      it('deve retornar status "200"', () => {
+        expect(response).to.have.status(StatusCode.OK);
+      });
+  
+      it('deve retornar body com um objeto com as chaves "id" e "clubName"', () => {
+        expect(response.body).to.be.an('object');
+        expect(response.body).to.have.all.keys('id', 'clubName')
+      });
+    });
+  })
 });
