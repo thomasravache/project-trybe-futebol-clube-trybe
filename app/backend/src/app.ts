@@ -31,6 +31,7 @@ class App {
   private routes(): void {
     this.app.use('/login', ControllerFactory.login().buildRoutes());
     this.app.use('/clubs', ControllerFactory.clubs().buildRoutes());
+    this.app.use('/matchs', ControllerFactory.matchs().buildRoutes());
   }
 
   private errorMiddlewares(): void {

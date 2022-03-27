@@ -5,7 +5,7 @@ import db from '.';
 class ClubModel extends Model implements IClubModel {
   public id!: number;
 
-  public clubName: string;
+  public clubName!: string;
 }
 
 ClubModel.init({

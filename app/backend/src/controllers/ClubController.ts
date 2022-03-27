@@ -16,7 +16,7 @@ class ClubController implements IController {
     this.findOne = this.findOne.bind(this);
   }
 
-  public async getAll(_req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+  private async getAll(_req: Request, res: Response, next: NextFunction): Promise<Response | void> {
     try {
       const clubs = await this.service.getAll();
 
@@ -26,7 +26,7 @@ class ClubController implements IController {
     }
   }
 
-  public async findOne(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+  private async findOne(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
     try {
       const { id } = req.params;
 

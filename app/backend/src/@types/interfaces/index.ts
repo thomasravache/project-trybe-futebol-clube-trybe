@@ -8,6 +8,8 @@ import IClubModel from './ClubModel';
 import IService from './Service';
 import IController from './Controller';
 import IClubService from './ClubService';
+import IMatchModel, { IMatchModelResponse } from './MatchModel';
+import IMatchService from './MatchService';
 
 export {
   IDomainError,
@@ -21,4 +23,7 @@ export {
   IService,
   IController,
   IClubService,
+  IMatchModel,
+  IMatchModelResponse,
+  IMatchService,
 };

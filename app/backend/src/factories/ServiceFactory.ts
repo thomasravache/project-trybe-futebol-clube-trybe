@@ -1,6 +1,6 @@
-import { IClubModel, IUserModel } from '../@types/interfaces';
+import { IClubModel, IMatchModel, IUserModel } from '../@types/interfaces';
 import { ModelStatic } from '../@types/types';
-import { LoginService, ClubService } from '../services';
+import { LoginService, ClubService, MatchService } from '../services';
 
 class ServiceFactory {
   public static login(model?: ModelStatic<IUserModel>) {
@@ -9,6 +9,10 @@ class ServiceFactory {
 
   public static clubs(model?: ModelStatic<IClubModel>) {
     return new ClubService(model);
+  }
+
+  public static matchs(model?: ModelStatic<IMatchModel>) {
+    return new MatchService(model);
   }
 }
 
