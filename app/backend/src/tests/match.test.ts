@@ -4,66 +4,45 @@ import * as sinon from 'sinon';
 import StatusCode from '../@types/enums';
 import { app } from '../app';
 import { Response } from 'superagent';
-import { IMatchModelResponse } from '../@types/interfaces';
+import { IMatchModel, IMatchModelResponse, IMatchModelRequest } from '../@types/interfaces';
 import MatchModel from '../database/models/MatchModel';
+import { matchs } from './mockData';
+import UserModel from '../database/models/UserModel';
+import * as bcrypt from 'bcryptjs';
 
 chai.use(chaiHttp);
 
 const { expect } = chai;
 
+const createFake = async (newMatch: any): Promise<any> => {
+  matchs.push(newMatch);
+
+  return {
+    id: new Date().getTime(),
+    ...newMatch,
+  } as any;
+}
+
 describe('------ Matchs ------', () => {
+  
   before(async () => {
-    sinon.stub(MatchModel, 'findAll').resolves([
-      {
-        id: 1,
-        homeTeam: 16,
-        homeTeamGoals: 1,
-        awayTeam: 8,
-        awayTeamGoals: 1,
-        inProgress: false,
-        homeClub: {
-          clubName: "São Paulo"
-        },
-        awayClub: {
-          clubName: "Grêmio"
-        }
-      },
-      {
-        id: 2,
-        homeTeam: 16,
-        homeTeamGoals: 2,
-        awayTeam: 9,
-        awayTeamGoals: 0,
-        inProgress: true,
-        homeClub: {
-          clubName: "São Paulo"
-        },
-        awayClub: {
-          clubName: "Internacional"
-        }
-      },
-      {
-        id: 3,
-        homeTeam: 16,
-        homeTeamGoals: 2,
-        awayTeam: 9,
-        awayTeamGoals: 0,
-        inProgress: true,
-        homeClub: {
-          clubName: "Corinthians"
-        },
-        awayClub: {
-          clubName: "Internacional"
-        }
-      }
-    ] as IMatchModelResponse[]);
+    const encryptedPassword = await bcrypt.hash('1234567', 8);
+    sinon.stub(UserModel, 'findOne').resolves({
+      id: 1,
+      username: 'Admin',
+      role: 'admin',
+      email: 'admin@admin.com.br',
+      password: encryptedPassword,
+    } as UserModel);
+    sinon.stub(MatchModel, 'findAll').resolves(matchs);
+    sinon.stub(MatchModel, 'create').callsFake(createFake as any);
   });
 
   after(() => {
     (MatchModel.findAll as sinon.SinonStub).restore();
   });
 
-  describe('\nQuando o request é feito na rota /matchs', () => {
+  describe('\nQuando o request é feito na rota GET /matchs', () => {
     describe('deve retornar todas as partidas', () => {
       let response: Response;
 
@@ -93,11 +72,61 @@ describe('------ Matchs ------', () => {
     });
   });
 
+  describe('\nQuando o request é feito na rota POST /matchs', () => {
+    describe('deve criar a partida', () => {
+      let firstMatchList: Response;
+      let createRequest: Response;
+      let secondMatchList: Response;
+      let token: string;
+
+      before(async () => {
+        firstMatchList = await chai.request(app).get('/matchs');
+
+        token = await chai.request(app).post('/login').send({
+          email: 'admin@admin.com.br',
+          password: '1234567',
+        }).then(({ body }) => body.token);
+
+        createRequest = await chai.request(app).post('/matchs').set('Authorization', token)
+          .send({
+            homeTeam: 16,
+            awayTeam: 8,
+            homeTeamGoals: 2,
+            awayTeamGoals: 2,
+            inProgress: true,
+          } as IMatchModelRequest);
+
+        secondMatchList = await chai.request(app).get('/matchs');
+      });
+
+      it('primeira requisição deve retornar a quantidade de registros atual', () => {
+        expect(firstMatchList.body).to.have.length(3);
+      });
+
+      it('createRequest retorna status "201"', () => {
+        expect(createRequest).to.have.status(StatusCode.CREATED);
+      });
+
+      it ('createRequest deve retornar um objeto', () => {
+        expect(createRequest.body).to.be.an('object');
+      });
+
+      it('o objeto retornado pela createRequest deve possuir as chaves de uma match', () => {
+        expect(createRequest.body).to.have.all.keys('id', 'homeTeam', 'awayTeam', 'homeTeamGoals', 'awayTeamGoals', 'inProgress');
+      });
+
+      it('após a criação deve retornar todos os registros de matchs com o registro criado', () => {
+        expect(secondMatchList.body).to.have.length(4);
+      });
+    });
+  });
+
   // describe('\nQuando o request é feito na /matchs?inProgress', () => {
   //   describe('e o inProgress é "true":', () => {
   //     let response: Response;
 
   //     before(async () => {
+  //       sinon.stub(new MatchService(), 'getAll')
   //       response = await chai.request(app)
   //         .get('/matchs')
   //         .query({ inProgress: true });
