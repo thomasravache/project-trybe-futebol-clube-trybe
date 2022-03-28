@@ -8,7 +8,7 @@ import IClubModel from './ClubModel';
 import IService from './Service';
 import IController from './Controller';
 import IClubService from './ClubService';
-import IMatchModel, { IMatchModelResponse } from './MatchModel';
+import IMatchModel, { IMatchModelResponse, IMatchModelRequest } from './MatchModel';
 import IMatchService from './MatchService';
 
 export {
@@ -26,4 +26,5 @@ export {
   IMatchModel,
   IMatchModelResponse,
   IMatchService,
+  IMatchModelRequest,
 };

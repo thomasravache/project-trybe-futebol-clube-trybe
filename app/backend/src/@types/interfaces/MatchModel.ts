@@ -1,12 +1,15 @@
 import { Model } from 'sequelize/types';
 
-interface IMatchModel extends Model {
-  id: number;
+export interface IMatchModelRequest {
   homeTeam: number;
   homeTeamGoals: number;
   awayTeam: number;
   awayTeamGoals: number;
   inProgress: boolean;
+}
+
+interface IMatchModel extends IMatchModelRequest, Model {
+  id: number;
 }
 
 export interface IMatchModelResponse extends IMatchModel {

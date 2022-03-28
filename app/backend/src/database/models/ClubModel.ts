@@ -12,6 +12,8 @@ ClubModel.init({
   id: {
     type: DataTypes.NUMBER,
     primaryKey: true,
+    allowNull: false,
+    autoIncrement: true,
   },
   clubName: DataTypes.STRING,
 }, {

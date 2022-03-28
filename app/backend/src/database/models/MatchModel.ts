@@ -21,10 +21,24 @@ MatchModel.init({
   id: {
     type: DataTypes.NUMBER,
     primaryKey: true,
+    autoIncrement: true,
+    allowNull: false,
   },
-  homeTeam: DataTypes.NUMBER,
+  homeTeam: {
+    type: DataTypes.NUMBER,
+    references: {
+      model: 'clubs',
+      key: 'id',
+    },
+  },
   homeTeamGoals: DataTypes.NUMBER,
-  awayTeam: DataTypes.NUMBER,
+  awayTeam: {
+    type: DataTypes.NUMBER,
+    references: {
+      model: 'clubs',
+      key: 'id',
+    },
+  },
   awayTeamGoals: DataTypes.NUMBER,
   inProgress: DataTypes.BOOLEAN,
 }, {

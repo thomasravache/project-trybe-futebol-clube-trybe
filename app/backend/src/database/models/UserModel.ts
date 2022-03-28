@@ -18,6 +18,8 @@ UserModel.init({
   id: {
     type: DataTypes.NUMBER,
     primaryKey: true,
+    autoIncrement: true,
+    allowNull: false,
   },
   username: DataTypes.STRING,
   role: DataTypes.STRING,
