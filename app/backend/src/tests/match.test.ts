@@ -10,6 +10,7 @@ import { matchs } from './mockData';
 import UserModel from '../database/models/UserModel';
 import * as bcrypt from 'bcryptjs';
 import { LoginRequest } from '../@types/types';
+import ClubModel from '../database/models/ClubModel';
 
 chai.use(chaiHttp);
 
@@ -161,6 +162,40 @@ describe('------ Matchs ------', () => {
 
       it('message deve ter a mensagem: "It is not possible to create a match with two equal teams"', () => {
         expect(createRequest.body.message).to.be.equal('It is not possible to create a match with two equal teams');
+      });
+    });
+
+    describe('deve gerar um erro ao tentar informar o id de um time que não existe', () => {
+      let createRequest: Response;
+
+      before(async () => {
+        sinon.stub(ClubModel, 'findAll').resolves([
+          {
+            id: 8,
+            clubName: 'Grêmio',
+          }
+        ] as ClubModel[]);
+
+        createRequest = await chai.request(app).post('/matchs').set('Authorization', token)
+        .send({
+          homeTeam: 123456,
+          awayTeam: 8,
+          homeTeamGoals: 2,
+          awayTeamGoals: 2,
+          inProgress: true,
+        } as IMatchModelRequest);
+      });
+
+      it('deve retornar status "401"', () => {
+        expect(createRequest).to.have.status(StatusCode.UNAUTHORIZED);
+      });
+
+      it('deve ter a propriedade "message" no body', () => {
+        expect(createRequest.body).to.have.property('message');
+      });
+
+      it('deve ter a mensagem "There is no team with such id!"', () => {
+        expect(createRequest.body.message).to.be.equal('There is no team with such id!');
       });
     });
   });

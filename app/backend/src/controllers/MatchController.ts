@@ -2,7 +2,7 @@ import { Router, Response, Request, NextFunction } from 'express';
 import Authenticator from '../jwtHandler/Authenticator';
 import StatusCode from '../@types/enums';
 import { IController, IMatchModel, IMatchService } from '../@types/interfaces';
-import { SchemaFactory, ServiceFactory } from '../factories';
+import { /* SchemaFactory, */ServiceFactory } from '../factories';
 
 class MatchController implements IController {
   public readonly service: IMatchService;
@@ -33,7 +33,7 @@ class MatchController implements IController {
     try {
       const createMatchRequest: IMatchModel = req.body;
 
-      SchemaFactory.validate<IMatchModel>(SchemaFactory.matchSchema(), createMatchRequest);
+      // SchemaFactory.validate<IMatchModel>(SchemaFactory.matchSchema(), createMatchRequest);
 
       const createdMatch = await this.service.create(createMatchRequest);
 

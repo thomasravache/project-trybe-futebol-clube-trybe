@@ -54,7 +54,9 @@ class MatchService implements IService {
       where: { id: { [Op.in]: [homeTeam, awayTeam] } },
     });
 
-    if (clubs.length !== 2) throw new CustomError('Club not found', StatusCode.NOT_FOUND);
+    if (clubs.length !== 2) {
+      throw new CustomError('There is no team with such id!', StatusCode.UNAUTHORIZED);
+    }
 
     if (inProgress === false) {
       throw new CustomError('inProgress must be true', StatusCode.BAD_REQUEST);
