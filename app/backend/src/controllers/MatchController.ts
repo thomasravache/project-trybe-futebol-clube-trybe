@@ -15,6 +15,7 @@ class MatchController implements IController {
 
     this.getAll = this.getAll.bind(this);
     this.create = this.create.bind(this);
+    this.endGame = this.endGame.bind(this);
   }
 
   private async getAll(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
@@ -42,9 +43,22 @@ class MatchController implements IController {
     }
   }
 
+  private async endGame(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+    try {
+      const { id } = req.params;
+
+      await this.service.endGame(parseInt(id, 10));
+
+      return res.status(StatusCode.OK).json({ message: 'OK' });
+    } catch (e) {
+      return next(e);
+    }
+  }
+
   public buildRoutes(): Router {
     this.router.get('/', this.getAll);
     this.router.post('/', new Authenticator().authMiddleware, this.create);
+    this.router.patch('/:id/finish', new Authenticator().authMiddleware, this.endGame);
 
     return this.router;
   }

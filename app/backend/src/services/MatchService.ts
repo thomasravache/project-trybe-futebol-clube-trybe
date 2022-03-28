@@ -2,7 +2,6 @@ import { Op } from 'sequelize';
 import MatchModel from '../database/models/MatchModel';
 import ClubModel from '../database/models/ClubModel';
 import {
-  IClubModel,
   IMatchModel,
   IMatchModelRequest,
   IMatchModelResponse,
@@ -59,9 +58,9 @@ class MatchService implements IService {
     }
   }
 
-  // public async endGame(matchId: number): Promise<void> {
-
-  // }
+  public async endGame(matchId: number): Promise<void> {
+    await this.model.update({ inProgress: false }, { where: { id: matchId } });
+  }
 }
 
 export default MatchService;
