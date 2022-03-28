@@ -1,5 +1,3 @@
-import { IMatchModelResponse } from '../@types/interfaces';
-
 export const matchs = [
   {
     id: 1,
@@ -43,7 +41,7 @@ export const matchs = [
       clubName: "Internacional"
     }
   }
-] as IMatchModelResponse[];
+] as any[];
 
 // export const users = [
 //   {

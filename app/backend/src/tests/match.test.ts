@@ -4,11 +4,12 @@ import * as sinon from 'sinon';
 import StatusCode from '../@types/enums';
 import { app } from '../app';
 import { Response } from 'superagent';
-import { IMatchModel, IMatchModelResponse, IMatchModelRequest } from '../@types/interfaces';
+import { IMatchModelResponse, IMatchModelRequest } from '../@types/interfaces';
 import MatchModel from '../database/models/MatchModel';
 import { matchs } from './mockData';
 import UserModel from '../database/models/UserModel';
 import * as bcrypt from 'bcryptjs';
+import { LoginRequest } from '../@types/types';
 
 chai.use(chaiHttp);
 
@@ -23,6 +24,15 @@ const createFake = async (newMatch: any): Promise<any> => {
   } as any;
 }
 
+const updateFake = async ({ inProgress }: any, { where: { id } }: any): Promise<any> => {
+  const index = matchs.findIndex((match) => match.id === id);
+
+  matchs.splice(index, 1, {
+    ...matchs[index],
+    inProgress: inProgress,
+  } as any);
+}
+
 describe('------ Matchs ------', () => {
   
   before(async () => {
@@ -35,11 +45,15 @@ describe('------ Matchs ------', () => {
       password: encryptedPassword,
     } as UserModel);
     sinon.stub(MatchModel, 'findAll').resolves(matchs);
-    sinon.stub(MatchModel, 'create').callsFake(createFake as any);
+    sinon.stub(MatchModel, 'create').callsFake(createFake);
+    sinon.stub(MatchModel, 'update').callsFake(updateFake);
   });
 
   after(() => {
+    (UserModel.findOne as sinon.SinonStub).restore();
     (MatchModel.findAll as sinon.SinonStub).restore();
+    (MatchModel.create as sinon.SinonStub).restore();
+    (MatchModel.update as sinon.SinonStub).restore();
   });
 
   describe('\nQuando o request é feito na rota GET /matchs', () => {
@@ -120,6 +134,37 @@ describe('------ Matchs ------', () => {
       });
     });
   });
+  MatchModel.update
+
+  describe('\nQuando o request é feito na rota PATCH /matchs/:id/finish', () => {
+    describe('deve finalizar uma partida', () => {
+      let token: string;
+      let response: Response;
+      const idToUpdate: number = 2;
+
+      before(async () => {
+        token = await chai.request(app).post('/login')
+          .send({
+            email: 'admin@admin.com.br',
+            password: '1234567',
+          } as LoginRequest)
+          .then(({ body }) => body.token);
+
+        response = await chai.request(app)
+        .patch(`/matchs/${idToUpdate}/finish`)
+        .set('Authorization', token);
+      });
+
+      it('retornando response status 204', () => {
+        expect(response).to.have.status(204);
+      });
+
+      it('a partida informada nos parametros deve estar com inProgress = false', () => {
+        const match = matchs.find((match) => match.id === idToUpdate);
+        expect(match.inProgress).to.be.equal(false);
+      });
+    });
+  })
 
   // describe('\nQuando o request é feito na /matchs?inProgress', () => {
   //   describe('e o inProgress é "true":', () => {
