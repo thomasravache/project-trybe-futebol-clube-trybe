@@ -2,6 +2,7 @@ import { Op } from 'sequelize';
 import MatchModel from '../database/models/MatchModel';
 import ClubModel from '../database/models/ClubModel';
 import {
+  IClubModel,
   IMatchModel,
   IMatchModelRequest,
   IMatchModelResponse,
@@ -33,24 +34,34 @@ class MatchService implements IService {
   }
 
   public async create(newMatch: IMatchModelRequest): Promise<IMatchModel> {
-    if (newMatch.homeTeam === newMatch.awayTeam) {
-      throw new CustomError('homeTeam and awayTeam must be diferents', StatusCode.BAD_REQUEST);
-    }
-
-    const clubs = await ClubModel.findAll({
-      where: { id: { [Op.in]: [newMatch.homeTeam, newMatch.awayTeam] } },
-    });
-
-    if (clubs.length !== 2) throw new CustomError('Club not found', StatusCode.NOT_FOUND);
-
-    if (newMatch.inProgress === false) {
-      throw new CustomError('inProgress must be true', StatusCode.BAD_REQUEST);
-    }
+    await MatchService.createValidate(newMatch);
 
     const createdMatch = await this.model.create(newMatch);
 
     return createdMatch;
   }
+
+  private static async createValidate(
+    { homeTeam, awayTeam, inProgress }: IMatchModelRequest,
+  ): Promise<void> {
+    if (homeTeam === awayTeam) {
+      throw new CustomError('homeTeam and awayTeam must be diferents', StatusCode.BAD_REQUEST);
+    }
+
+    const clubs = await ClubModel.findAll({
+      where: { id: { [Op.in]: [homeTeam, awayTeam] } },
+    });
+
+    if (clubs.length !== 2) throw new CustomError('Club not found', StatusCode.NOT_FOUND);
+
+    if (inProgress === false) {
+      throw new CustomError('inProgress must be true', StatusCode.BAD_REQUEST);
+    }
+  }
+
+  // public async endGame(matchId: number): Promise<void> {
+
+  // }
 }
 
 export default MatchService;
