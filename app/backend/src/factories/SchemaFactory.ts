@@ -1,6 +1,6 @@
 import { ObjectSchema } from 'joi';
 import { LoginSchema, MatchSchema, SchemaValidator } from '../controllers/schemas';
-import { LoginRequest } from '../@types/types';
+import { LoginRequest, UpdateMatchResultRequest } from '../@types/types';
 import { IMatchModel } from '../@types/interfaces';
 
 class SchemaFactory {
@@ -14,6 +14,10 @@ class SchemaFactory {
 
   public static matchSchema(): ObjectSchema<IMatchModel> {
     return new MatchSchema().schema();
+  }
+
+  public static matchResultSchema(): ObjectSchema<UpdateMatchResultRequest> {
+    return new MatchSchema().matchResultSchema();
   }
 }
 

@@ -15,6 +15,15 @@ class MatchSchema implements ISchema<IMatchModel> {
 
     return this._schema;
   }
+
+  public matchResultSchema(): Joi.ObjectSchema<IMatchModel> {
+    this._schema = Joi.object({
+      homeTeamGoals: Joi.number().required(),
+      awayTeamGoals: Joi.number().required(),
+    });
+
+    return this._schema;
+  }
 }
 
 export default MatchSchema;

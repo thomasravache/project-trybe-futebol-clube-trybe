@@ -2,7 +2,8 @@ import { Router, Response, Request, NextFunction } from 'express';
 import Authenticator from '../jwtHandler/Authenticator';
 import StatusCode from '../@types/enums';
 import { IController, IMatchModel, IMatchService } from '../@types/interfaces';
-import { /* SchemaFactory, */ServiceFactory } from '../factories';
+import { /* SchemaFactory, */SchemaFactory, ServiceFactory } from '../factories';
+import { UpdateMatchResultRequest } from '../@types/types';
 
 class MatchController implements IController {
   public readonly service: IMatchService;
@@ -16,6 +17,7 @@ class MatchController implements IController {
     this.getAll = this.getAll.bind(this);
     this.create = this.create.bind(this);
     this.endGame = this.endGame.bind(this);
+    this.updateMatchResult = this.updateMatchResult.bind(this);
   }
 
   private async getAll(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
@@ -55,10 +57,31 @@ class MatchController implements IController {
     }
   }
 
+  private async updateMatchResult(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<Response | void> {
+    try {
+      const editMatchRequest: UpdateMatchResultRequest = req.body;
+      const { id } = req.params;
+
+      SchemaFactory
+        .validate<UpdateMatchResultRequest>(SchemaFactory.matchResultSchema(), editMatchRequest);
+
+      await this.service.updateMatchResult(parseInt(id, 10), editMatchRequest);
+
+      return res.status(StatusCode.OK).json({ message: 'OK' });
+    } catch (e) {
+      return next(e);
+    }
+  }
+
   public buildRoutes(): Router {
     this.router.get('/', this.getAll);
     this.router.post('/', new Authenticator().authMiddleware, this.create);
     this.router.patch('/:id/finish', new Authenticator().authMiddleware, this.endGame);
+    this.router.patch('/:id', new Authenticator().authMiddleware, this.updateMatchResult);
 
     return this.router;
   }

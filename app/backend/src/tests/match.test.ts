@@ -25,12 +25,12 @@ const createFake = async (newMatch: any): Promise<any> => {
   } as any;
 }
 
-const updateFake = async ({ inProgress }: any, { where: { id } }: any): Promise<any> => {
+const updateFake = async (params: any, { where: { id } }: any): Promise<any> => {
   const index = matchs.findIndex((match) => match.id === id);
-
+  console.log(params);
   matchs.splice(index, 1, {
     ...matchs[index],
-    inProgress: inProgress,
+    ...params,
   } as any);
 }
 
@@ -186,6 +186,10 @@ describe('------ Matchs ------', () => {
         } as IMatchModelRequest);
       });
 
+      after(() => {
+        (ClubModel.findAll as sinon.SinonStub).restore();
+      })
+
       it('deve retornar status "401"', () => {
         expect(createRequest).to.have.status(StatusCode.UNAUTHORIZED);
       });
@@ -199,6 +203,41 @@ describe('------ Matchs ------', () => {
       });
     });
   });
+
+  describe('\nQuando o request é feito na rota PATCH /matchs/:id', () => {
+    let token: string;
+
+    before(async () => {
+      token = await chai.request(app).post('/login').send({
+        email: 'admin@admin.com.br',
+        password: '1234567',
+      }).then(({ body }) => body.token);
+    });
+
+    describe('deve conseguir alterar o resultado de uma partida', () => {
+      let createRequest: Response;
+      const idToUpdate = 2;
+
+      before(async () => {
+        createRequest = await chai.request(app).patch(`/matchs/${idToUpdate}`)
+          .send({
+            homeTeamGoals: 7,
+            awayTeamGoals: 1,
+          })
+          .set('Authorization', token);
+      });
+
+      it('deve retornar status 200', () => {
+        expect(createRequest).to.have.status(StatusCode.OK);
+      });
+
+      it('a partida deve ter o resultado alterado conforma a requisição', () => {
+        const match = matchs.find((m) => m.id === idToUpdate);
+        expect(match.homeTeamGoals).to.be.equal(7);
+        expect(match.awayTeamGoals).to.be.equal(1);
+      });
+    });
+  })
 
   describe('\nQuando o request é feito na rota PATCH /matchs/:id/finish', () => {
     describe('deve finalizar uma partida', () => {

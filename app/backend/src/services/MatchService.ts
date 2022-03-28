@@ -7,7 +7,7 @@ import {
   IMatchModelResponse,
   IService,
 } from '../@types/interfaces';
-import { ModelStatic } from '../@types/types';
+import { ModelStatic, UpdateMatchResultRequest } from '../@types/types';
 import CustomError from '../errors/CustomError';
 import StatusCode from '../@types/enums';
 
@@ -65,6 +65,13 @@ class MatchService implements IService {
 
   public async endGame(matchId: number): Promise<void> {
     await this.model.update({ inProgress: false }, { where: { id: matchId } });
+  }
+
+  public async updateMatchResult(
+    matchId: number,
+    { homeTeamGoals, awayTeamGoals }: UpdateMatchResultRequest,
+  ): Promise<void> {
+    await this.model.update({ homeTeamGoals, awayTeamGoals }, { where: { id: matchId } });
   }
 }
 
