@@ -87,19 +87,22 @@ describe('------ Matchs ------', () => {
   });
 
   describe('\nQuando o request é feito na rota POST /matchs', () => {
+    let token: string;
+
+    before(async () => {
+      token = await chai.request(app).post('/login').send({
+        email: 'admin@admin.com.br',
+        password: '1234567',
+      }).then(({ body }) => body.token);
+    });
+
     describe('deve criar a partida', () => {
       let firstMatchList: Response;
       let createRequest: Response;
       let secondMatchList: Response;
-      let token: string;
 
       before(async () => {
         firstMatchList = await chai.request(app).get('/matchs');
-
-        token = await chai.request(app).post('/login').send({
-          email: 'admin@admin.com.br',
-          password: '1234567',
-        }).then(({ body }) => body.token);
 
         createRequest = await chai.request(app).post('/matchs').set('Authorization', token)
           .send({
@@ -133,8 +136,34 @@ describe('------ Matchs ------', () => {
         expect(secondMatchList.body).to.have.length(4);
       });
     });
+
+    describe('não deve permitir que homeTeam e awayTeam tenham o mesmo valor', () => {
+      let createRequest: Response;
+
+      before(async () => {
+        createRequest = await chai.request(app).post('/matchs').set('Authorization', token)
+        .send({
+          homeTeam: 8,
+          awayTeam: 8,
+          homeTeamGoals: 2,
+          awayTeamGoals: 2,
+          inProgress: true,
+        } as IMatchModelRequest);
+      });
+
+      it('deve retornar status 401', () => {
+        expect(createRequest).to.have.status(StatusCode.UNAUTHORIZED);
+      });
+
+      it('deve ter a propriedade "message" no body', () => {
+        expect(createRequest.body).to.have.property('message');
+      });
+
+      it('message deve ter a mensagem: "It is not possible to create a match with two equal teams"', () => {
+        expect(createRequest.body.message).to.be.equal('It is not possible to create a match with two equal teams');
+      });
+    });
   });
-  MatchModel.update
 
   describe('\nQuando o request é feito na rota PATCH /matchs/:id/finish', () => {
     describe('deve finalizar uma partida', () => {
@@ -155,8 +184,8 @@ describe('------ Matchs ------', () => {
         .set('Authorization', token);
       });
 
-      it('retornando response status 204', () => {
-        expect(response).to.have.status(204);
+      it('retornando response status 200', () => {
+        expect(response).to.have.status(StatusCode.OK);
       });
 
       it('a partida informada nos parametros deve estar com inProgress = false', () => {

@@ -44,7 +44,10 @@ class MatchService implements IService {
     { homeTeam, awayTeam, inProgress }: IMatchModelRequest,
   ): Promise<void> {
     if (homeTeam === awayTeam) {
-      throw new CustomError('homeTeam and awayTeam must be diferents', StatusCode.BAD_REQUEST);
+      throw new CustomError(
+        'It is not possible to create a match with two equal teams',
+        StatusCode.UNAUTHORIZED,
+      );
     }
 
     const clubs = await ClubModel.findAll({
