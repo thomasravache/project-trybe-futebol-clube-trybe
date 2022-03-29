@@ -43,6 +43,57 @@ export const matchs = [
   }
 ] as any[];
 
+export const clubs = [
+  {
+    id: 1,
+    clubName: 'São Paulo',
+    homeMatchs: [
+      {
+        id: 1,
+        homeTeam: 1,
+        homeTeamGoals: 1,
+        awayTeam: 2,
+        awayTeamGoals: 0,
+        inProgress: true,
+      }
+    ],
+    awayMatchs: [
+      {
+        id: 2,
+        homeTeam: 2,
+        homeTeamGoals: 1,
+        awayTeam: 1,
+        awayTeamGoals: 0,
+        inProgress: false,
+      },
+    ],
+  },
+  {
+    id: 2,
+    clubName: 'Corinthians',
+    homeMatchs: [
+      {
+        id: 1,
+        homeTeam: 2,
+        homeTeamGoals: 1,
+        awayTeam: 1,
+        awayTeamGoals: 0,
+        inProgress: false,
+      }
+    ],
+    awayMatchs: [
+      {
+        id: 2,
+        homeTeam: 1,
+        homeTeamGoals: 1,
+        awayTeam: 2,
+        awayTeamGoals: 0,
+        inProgress: true,
+      },
+    ],
+  },
+] as any;
+
 // export const users = [
 //   {
 //     id: 1,

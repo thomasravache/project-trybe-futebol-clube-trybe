@@ -4,12 +4,13 @@ import IUserModel, { IUserResponse } from './UserModel';
 import ILoginService from './LoginService';
 import ISchema from './Schema';
 import IRequest from './Request';
-import IClubModel from './ClubModel';
+import IClubModel, { IClubModelAssociations } from './ClubModel';
 import IService from './Service';
 import IController from './Controller';
 import IClubService from './ClubService';
 import IMatchModel, { IMatchModelResponse, IMatchModelRequest } from './MatchModel';
 import IMatchService from './MatchService';
+import ILeaderboardService from './LeaderboardService';
 
 export {
   IDomainError,
@@ -27,4 +28,6 @@ export {
   IMatchModelResponse,
   IMatchService,
   IMatchModelRequest,
+  ILeaderboardService,
+  IClubModelAssociations,
 };

@@ -4,6 +4,7 @@ import JoiStatusCodes from './JoiStatusCodes';
 import ModelStatic from './ModelStatic';
 import LoginResponse from './LoginResponse';
 import UpdateMatchResultRequest from './UpdateMatchResult';
+import LeaderBoardResponse, { LeaderBoardType } from './Leaderboard';
 
 export {
   JwtOptions,
@@ -12,4 +13,6 @@ export {
   JoiStatusCodes,
   ModelStatic,
   UpdateMatchResultRequest,
+  LeaderBoardResponse,
+  LeaderBoardType,
 };

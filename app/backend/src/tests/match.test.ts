@@ -4,7 +4,7 @@ import * as sinon from 'sinon';
 import StatusCode from '../@types/enums';
 import { app } from '../app';
 import { Response } from 'superagent';
-import { IMatchModelResponse, IMatchModelRequest } from '../@types/interfaces';
+import { IMatchModelResponse, IMatchModelRequest, IClubModel } from '../@types/interfaces';
 import MatchModel from '../database/models/MatchModel';
 import { matchs } from './mockData';
 import UserModel from '../database/models/UserModel';
@@ -35,7 +35,6 @@ const updateFake = async (params: any, { where: { id } }: any): Promise<any> => 
 }
 
 describe('------ Matchs ------', () => {
-  
   before(async () => {
     const encryptedPassword = await bcrypt.hash('1234567', 8);
     sinon.stub(UserModel, 'findOne').resolves({
@@ -103,6 +102,17 @@ describe('------ Matchs ------', () => {
       let secondMatchList: Response;
 
       before(async () => {
+        sinon.stub(ClubModel, 'findAll').resolves([
+          {
+            id: 16,
+            clubName: 'Timão Fake',
+          },
+          {
+            id: 8,
+            clubName: 'Timinho Fake',
+          },
+        ] as IClubModel[])
+
         firstMatchList = await chai.request(app).get('/matchs');
 
         createRequest = await chai.request(app).post('/matchs').set('Authorization', token)
@@ -116,6 +126,10 @@ describe('------ Matchs ------', () => {
 
         secondMatchList = await chai.request(app).get('/matchs');
       });
+
+      before(() => {
+        (ClubModel.findAll as sinon.SinonStub).restore();
+      })
 
       it('primeira requisição deve retornar a quantidade de registros atual', () => {
         expect(firstMatchList.body).to.have.length(3);
