@@ -39,14 +39,9 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=123456
     restart: 'always'
-    # networks:
-    #   - net1
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"] # Deve aguardar o banco ficar operacional
       timeout: 10s
       retries: 5
     cap_add:
       - SYS_NICE # Deve omitir alertas menores
-
-# networks:
-#   net1:
