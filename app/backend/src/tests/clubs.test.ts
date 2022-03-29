@@ -27,15 +27,11 @@ describe('------ Clubs -------', () => {
         clubName: 'Os bacana',
       },
     ] as IClubModel[]);
-
-    sinon.stub(ClubModel, 'findOne').resolves({
-      id: 1,
-      clubName: 'Timaço',
-    } as IClubModel);
   });
 
   after(() => {
     (ClubModel.findAll as sinon.SinonStub).restore();
+    (ClubModel.findOne as sinon.SinonStub).restore();
   });
 
   describe('\nQuando o request é feito na rota /clubs', () => {
@@ -64,13 +60,22 @@ describe('------ Clubs -------', () => {
   });
 
   describe('\nQuando o request é feito na rota /clubs/:id', () => {
-    let response: Response;
-
-    before(async () => {
-      response = await chai.request(app).get('/clubs/1');
-    });
-
     describe('deve retornar o clube de acordo com o id', () => {
+      let response: Response;
+
+      before(async () => {
+        sinon.stub(ClubModel, 'findOne').resolves({
+          id: 1,
+          clubName: 'Timaço',
+        } as IClubModel);
+
+        response = await chai.request(app).get('/clubs/1');
+      });
+
+      after(() => {
+        (ClubModel.findOne as sinon.SinonStub).restore();
+      });
+
       it('deve retornar status "200"', () => {
         expect(response).to.have.status(StatusCode.OK);
       });
@@ -80,5 +85,23 @@ describe('------ Clubs -------', () => {
         expect(response.body).to.have.all.keys('id', 'clubName')
       });
     });
+
+    describe('Quando o clube não é encontrado', () => {
+      let response: Response;
+
+      before(async () => {
+        sinon.stub(ClubModel, 'findOne').resolves(undefined);
+
+        response = await chai.request(app).get('/clubs/1');
+      });
+
+      it('deve retornar status 404', () => {
+        expect(response).to.have.status(StatusCode.NOT_FOUND);
+      });
+
+      it('deve conter a mensagem "Club not found"', () => {
+        expect(response.body.message).to.be.equal('Club not found');
+      });
+    })
   })
 });

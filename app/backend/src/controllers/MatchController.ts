@@ -35,8 +35,6 @@ class MatchController implements IController {
     try {
       const createMatchRequest: IMatchModel = req.body;
 
-      // SchemaFactory.validate<IMatchModel>(SchemaFactory.matchSchema(), createMatchRequest);
-
       const createdMatch = await this.service.create(createMatchRequest);
 
       return res.status(StatusCode.CREATED).json(createdMatch);
