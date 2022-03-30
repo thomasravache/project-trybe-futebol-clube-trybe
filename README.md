@@ -43,6 +43,9 @@ O objetivo do projeto foi construir um back-end dockerizado utilizando modelagem
  - MySQL
  - JSON Web Token
  - Docker
+ - Mocha
+ - Chai
+ - Sinon
 
 # Autor
 **Thomas Ravache**
