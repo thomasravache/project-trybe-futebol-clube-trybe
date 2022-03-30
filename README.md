@@ -5,7 +5,7 @@
 
 # Sobre o projeto
 
-Este recurso foi criado para colocar em prática os conhecimentos adquiridos no curso de Desenvolvimento Web da **Trybe** de um projeto do bloco de **Back-end**.
+Este repositório foi criado para colocar em prática os conhecimentos adquiridos no curso de Desenvolvimento Web da **Trybe** de um projeto do bloco de **Back-end**.
 
 O objetivo do projeto foi construir um back-end dockerizado utilizando modelagem de dados através do Sequelize, respeitando as regras de negócio providas no projeto, onde a minha API devesse ser capaz de ser consumida por um front-end já provido no próprio projeto.
 
