@@ -46,6 +46,7 @@ O objetivo do projeto foi construir um back-end dockerizado utilizando modelagem
 
  - Typescript
  - Node.js
+ - Express.js
  - Sequelize
  - MySQL
  - JSON Web Token
@@ -53,6 +54,7 @@ O objetivo do projeto foi construir um back-end dockerizado utilizando modelagem
  - Mocha
  - Chai
  - Sinon
+ - Joi
 
 # Autor
 **Thomas Ravache**
