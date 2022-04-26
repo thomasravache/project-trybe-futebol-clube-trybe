@@ -20,7 +20,7 @@ O objetivo do projeto foi construir um back-end dockerizado utilizando modelagem
 # How to Start
 
 1. `npm install`
-2. Setar as variáveis de ambiente, utilize o arquivo `.env.example` do frontend e do backend (depois de alterar renomeie o arquivo para `.env` apenas) e também o `docker-compose.yml` (ENVIRONMENT).
+2. Setar as variáveis de ambiente, utilize o arquivo `.env.example` para o frontend e backend (depois de alterar renomeie o arquivo para `.env` apenas) e também o `docker-compose.yml` (ENVIRONMENT).
 3. `npm run compose:up`
 4. Acesse localmente na porta 3000.
 
