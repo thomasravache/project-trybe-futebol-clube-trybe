@@ -17,6 +17,13 @@ O objetivo do projeto foi construir um back-end dockerizado utilizando modelagem
 - Construir uma API REST com endpoints para consumir os models criados;
 - Fazer um CRUD utilizando ORM;
 
+# How to Start
+
+1. `npm install`
+2. Setar as variáveis de ambiente, utilize o arquivo `.env.example` do frontend e do backend (depois de alterar renomeie o arquivo para `.env` apenas) e também o `docker-compose.yml` (ENVIRONMENT).
+3. `npm run compose:up`
+4. Acesse localmente na porta 3000.
+
 # Exemplos
 
 ### Front-end
